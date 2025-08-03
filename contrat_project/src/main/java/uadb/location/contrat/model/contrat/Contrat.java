@@ -5,8 +5,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
+import uadb.location.contrat.dto.client.ChambreClient.ReadChambreDTO;
+import uadb.location.contrat.dto.client.UtilisateurClient.ReadUtilisateurDTO;
 import uadb.location.contrat.dto.controller.contratController.InfoContratResponse;
+import uadb.location.contrat.dto.controller.contratController.InfoContratWChambreAndLocataireResponse;
 import uadb.location.contrat.dto.controller.contratController.InfoContratWORelationsResponse;
+import uadb.location.contrat.dto.controller.contratController.updateContrat.UpdateContratRequest;
 import uadb.location.contrat.model.paiement.Paiement;
 import uadb.location.contrat.model.probleme.Probleme;
 
@@ -251,5 +255,55 @@ public class Contrat {
                 contrat.creeLe()
         );
     }
+    public static InfoContratWChambreAndLocataireResponse toInfoContratWChambreAndLocataireResponse(Contrat contrat, ReadChambreDTO chambre, ReadUtilisateurDTO utilisateur) {
+        return  new InfoContratWChambreAndLocataireResponse(
+                contrat.id(),
+                contrat.locataireId(),
+                contrat.chambreId(),
+                contrat.dateDebut(),
+                contrat.dateFin(),
+                contrat.montantCaution(),
+                contrat.moisCaution(),
+                contrat.description(),
+                contrat.modePaiement(),
+                contrat.periodicite(),
+                contrat.statut(),
+                contrat.creeLe(),
+                utilisateur,
+                chambre,
+                contrat.paiements().stream().map(Paiement::toInfoPaiementWORelationsResponse).toList(),
+                contrat.problemes().stream().map(Probleme::toInfoProblemeWORelationsResponse).toList()
+        );
+    }
+    public static Contrat fromUpdateContratRequest(UpdateContratRequest contrat) {
+        return  new Contrat()
+                .setLocataireId(contrat.locataireId())
+                .setChambreId(contrat.chambreId())
+                .setDateDebut(contrat.dateDebut())
+                .setDateFin(contrat.dateFin())
+                .setMoisCaution(contrat.moisCaution())
+                .setMontantCaution(contrat.montantCaution())
+                .setDescription(contrat.description())
+                .setModePaiement(contrat.modePaiement())
+                .setPeriodicite(contrat.periodicite())
+                .setStatut(contrat.statut());
+    }
 
 }
+/*
+
+public record UpdateContratRequest(
+        Long locataireId,
+        Long chambreId,
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
+        LocalDateTime dateDebut,
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone = "UTC")
+        LocalDateTime dateFin,
+        Double montantCaution,
+        Integer moisCaution,
+        String description,
+        Contrat.ModePaiement modePaiement,
+        Contrat.Periodicite periodicite,
+        Contrat.Statut statut
+) {
+}*/

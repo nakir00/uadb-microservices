@@ -15,8 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import uadb.logement.gateway.controller.UtilisateurController;
-import uadb.logement.gateway.service.UtilisateurService;
+import uadb.logement.gateway.controller.AuthController;
+import uadb.logement.gateway.service.AuthService;
 
 import java.io.IOException;
 
@@ -25,13 +25,13 @@ import java.io.IOException;
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final UtilisateurService utilisateurService;
+    private final AuthService authService;
 
-    private static final Logger log = LoggerFactory.getLogger(UtilisateurController.class);
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
-    public AuthTokenFilter(JwtUtils jwtUtils, UtilisateurService utilisateurService) {
+    public AuthTokenFilter(JwtUtils jwtUtils, AuthService authService) {
         this.jwtUtils = jwtUtils;
-        this.utilisateurService = utilisateurService;
+        this.authService = authService;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private void authenticateUser(String jwt, HttpServletRequest request) {
         try {
             String username = jwtUtils.getUserNameFromJwtToken(jwt);
-            UserDetails userDetails = utilisateurService.loadUserByUsername(username);
+            UserDetails userDetails = authService.loadUserByUsername(username);
 
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
@@ -110,7 +110,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
             // Extraire le username du refresh token
             String username = jwtUtils.getUserNameFromJwtToken(refreshToken);
-            UserDetails userDetails = utilisateurService.loadUserByUsername(username);
+            UserDetails userDetails = authService.loadUserByUsername(username);
 
             // Générer de nouveaux tokens
             ResponseCookie newAccessTokenCookie = jwtUtils.generateJwtCookie(userDetails);

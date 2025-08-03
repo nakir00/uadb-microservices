@@ -1,8 +1,8 @@
 package uadb.location.contrat.dto.controller.contratController;
 
-import uadb.location.contrat.dto.controller.paiementController.InfoPaiementResponse;
+import uadb.location.contrat.dto.client.ChambreClient.ReadChambreDTO;
+import uadb.location.contrat.dto.client.UtilisateurClient.ReadUtilisateurDTO;
 import uadb.location.contrat.dto.controller.paiementController.InfoPaiementWORelationsResponse;
-import uadb.location.contrat.dto.controller.problemeController.InfoProblemeResponse;
 import uadb.location.contrat.dto.controller.problemeController.InfoProblemeWORelationsResponse;
 import uadb.location.contrat.model.contrat.Contrat;
 
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record InfoContratResponse(
+public record InfoContratWChambreAndLocataireResponse(
         Long id,
         Long locataireId,
         Long chambreId,
@@ -24,6 +24,8 @@ public record InfoContratResponse(
         Contrat.Periodicite periodicite,
         Contrat.Statut statut,
         LocalDateTime creeLe,
+        ReadUtilisateurDTO locataire,
+        ReadChambreDTO chambre,
         List<InfoPaiementWORelationsResponse> paiements, //  a remplacer
         List<InfoProblemeWORelationsResponse> problemes  // a remplacer
 ) {

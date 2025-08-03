@@ -147,6 +147,7 @@ function RouteComponent() {
         <div className="flex flex-wrap items-center justify-center gap-3">
           <ToggleGroup
             type="single"
+            variant="outline"
             defaultValue="location"
             onValueChange={(value) => {
               switch (value) {
@@ -159,7 +160,6 @@ function RouteComponent() {
                 case 'all':
                   setDisponible(undefined)
                   break
-              
                 default:
                   break;
               }

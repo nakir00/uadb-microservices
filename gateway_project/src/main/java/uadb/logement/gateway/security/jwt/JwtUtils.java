@@ -13,15 +13,13 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
-import uadb.logement.gateway.controller.UtilisateurController;
-import uadb.logement.gateway.model.Utilisateur;
+import uadb.logement.gateway.controller.AuthController;
 
-import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Component
-@Slf4j
 public class JwtUtils {
 
     @Value("${app.jwtSecret}")
@@ -39,7 +37,7 @@ public class JwtUtils {
     @Value("${app.refreshTokenCookieName}")
     private String refreshTokenCookieName;
 
-    private static final Logger log = LoggerFactory.getLogger(UtilisateurController.class);
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
 
     private Key getSigningKey() {
@@ -60,7 +58,7 @@ public class JwtUtils {
                 .maxAge(refreshTokenExpirationMs / 1000)
                 .httpOnly(true)
                 .secure(true) // HTTPS uniquement
-                .sameSite("Strict") // Protection CSRF plus stricte
+                .sameSite("None") // Protection CSRF plus stricte
                 .build();
     }
 
@@ -71,12 +69,13 @@ public class JwtUtils {
                 .maxAge(maxAge)
                 .httpOnly(true)
                 .secure(true) // Activer en production avec HTTPS
-                .sameSite("Lax") // Protection CSRF
+                .sameSite("None") // Protection CSRF
                 .build();
     }
 
     // Extraction du JWT depuis les cookies
     public String getJwtFromCookies(HttpServletRequest request) {
+        System.out.println(jwtCookieName);
         return getCookieValueByName(request, jwtCookieName);
     }
 
@@ -86,10 +85,14 @@ public class JwtUtils {
     }
 
     private String getCookieValueByName(HttpServletRequest request, String name) {
+
         Cookie cookie = WebUtils.getCookie(request, name);
+
         if (cookie != null) {
+            System.out.println(cookie.getValue());
             return cookie.getValue();
         } else {
+            System.out.println("aucun token retrouvé");
             return null;
         }
     }
@@ -168,7 +171,7 @@ public class JwtUtils {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite("None")
                 .build();
     }
 
@@ -178,7 +181,7 @@ public class JwtUtils {
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
     }
 }

@@ -2,18 +2,20 @@ package uadb.location.logement.model.Chambre;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
-import uadb.location.logement.dto.chambreController.InfoChambreResponse;
-import uadb.location.logement.dto.chambreController.createChambre.CreateChambreRequest;
+import uadb.location.logement.dto.controller.chambreController.InfoChambreResponse;
+import uadb.location.logement.dto.controller.chambreController.createChambre.CreateChambreRequest;
 import uadb.location.logement.model.Media;
-import uadb.location.logement.model.RendezVous;
+import uadb.location.logement.model.rendezVous.RendezVous;
 import uadb.location.logement.model.maison.Maison;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -114,11 +116,13 @@ public class Chambre {
     @JsonBackReference
     private Maison maison;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "chambre", cascade = CascadeType.ALL)
-    private List<Media> medias;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "chambre", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Media> medias = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "chambre", cascade = CascadeType.ALL)
-    private List<RendezVous> rendezVousList;
+    @JsonManagedReference
+    private List<RendezVous> rendezVousList = new ArrayList<>();
 
     public Long id() {
         return id;
@@ -247,7 +251,10 @@ public class Chambre {
                 chambre.salleDeBain(),
                 chambre.disponible(),
                 chambre.prix(),
-                chambre.creeLe()
+                chambre.creeLe(),
+                Maison.toInfoMaisonResponse(chambre.getMaison()),
+                chambre.rendezVousList().stream().map(RendezVous::toInfoRendezVousResponseWOChambre).toList(),
+                chambre.medias().stream().map(Media::toInfoMediaResponse).toList()
         );
     }
 }

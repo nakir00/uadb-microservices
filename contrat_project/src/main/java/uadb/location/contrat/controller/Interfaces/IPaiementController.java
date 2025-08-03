@@ -9,14 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import uadb.location.contrat.dto.controller.contratController.InfoContratResponse;
+import uadb.location.contrat.dto.controller.paiementController.InfoPaiementResponse;
 import uadb.location.contrat.model.contrat.ContratSearchCriteria;
+import uadb.location.contrat.model.paiement.PaiementSearchCriteria;
 
-public interface IContratController {
+public interface IPaiementController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Page<InfoContratResponse>> readChambres(
+    public ResponseEntity<Page<InfoPaiementResponse>> readPaiements(
             @PageableDefault Pageable pageable,
-            @ModelAttribute ContratSearchCriteria contratSearchCriteria,
+            @ModelAttribute PaiementSearchCriteria paiementSearchCriteria,
             HttpServletRequest request
     );
 }

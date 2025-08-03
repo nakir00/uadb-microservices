@@ -1,21 +1,12 @@
 package uadb.location.contrat.dto.controller.contratController;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SourceType;
 import uadb.location.contrat.model.contrat.Contrat;
-import uadb.location.contrat.model.paiement.Paiement;
-import uadb.location.contrat.model.probleme.Probleme;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-public record InfoContratResponse(
+public record InfoContratWORelationsResponse(
         Long id,
         Long locataireId,
         Long chambreId,
@@ -27,8 +18,6 @@ public record InfoContratResponse(
         Contrat.ModePaiement modePaiement,
         Contrat.Periodicite periodicite,
         Contrat.Statut statut,
-        LocalDateTime creeLe,
-        List<Paiement> paiements, //  a remplacer
-        List<Probleme> problemes  // a remplacer
+        LocalDateTime creeLe
 ) {
 }

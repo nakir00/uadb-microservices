@@ -29,6 +29,7 @@ replay_pid*
 logs
 **/*.backup.*
 **/*.back.*
+**/mysql/** 
 
 node_modules
 bower_components

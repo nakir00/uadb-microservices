@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import uadb.location.contrat.dto.controller.problemeController.InfoProblemeResponse;
 import uadb.location.contrat.dto.controller.problemeController.InfoProblemeWORelationsResponse;
+import uadb.location.contrat.dto.controller.problemeController.saveProbleme.CreateProblemeRequest;
 import uadb.location.contrat.model.contrat.Contrat;
 
 import java.time.LocalDateTime;
@@ -16,13 +17,13 @@ public class Probleme {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "contrat_id", nullable = false)
-    private Integer contratId;
+    private Long contratId;
 
     @Column(name = "signale_par")
-    private Integer signalePar;
+    private Long signalePar;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
@@ -46,29 +47,29 @@ public class Probleme {
     @JsonBackReference
     private Contrat contrat;
 
-    public Integer id() {
+    public Long id() {
         return id;
     }
 
-    public Probleme setId(Integer id) {
+    public Probleme setId(Long id) {
         this.id = id;
         return this;
     }
 
-    public Integer contratId() {
+    public Long contratId() {
         return contratId;
     }
 
-    public Probleme setContratId(Integer contratId) {
+    public Probleme setContratId(Long contratId) {
         this.contratId = contratId;
         return this;
     }
 
-    public Integer signalePar() {
+    public Long signalePar() {
         return signalePar;
     }
 
-    public Probleme setSignalePar(Integer signalePar) {
+    public Probleme setSignalePar(Long signalePar) {
         this.signalePar = signalePar;
         return this;
     }
@@ -153,6 +154,16 @@ public class Probleme {
                 probleme.resolu(),
                 probleme.creeLe()
         );
+    }
+
+    public static Probleme fromCreateProblemeRequest(CreateProblemeRequest createProblemeRequest) {
+        return new Probleme()
+                .setContratId(createProblemeRequest.contratId())
+                .setResolu(createProblemeRequest.resolu())
+                .setSignalePar(createProblemeRequest.signalePar())
+                .setDescription(createProblemeRequest.description())
+                .setType(createProblemeRequest.type())
+                .setResponsable(createProblemeRequest.responsable());
     }
 
     public static InfoProblemeResponse toInfoProblemeResponse(Probleme probleme) {

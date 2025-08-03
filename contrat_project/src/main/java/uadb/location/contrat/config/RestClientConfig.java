@@ -1,4 +1,4 @@
-package uadb.location.logement.config;
+package uadb.location.contrat.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
-import uadb.location.logement.client.CDNClient;
-import uadb.location.logement.client.UtilisateurClient;
+import uadb.location.contrat.client.CDNClient;
+import uadb.location.contrat.client.UtilisateurClient;
 //import uadb.location.logement.client.UtilisateurClient;
 
 

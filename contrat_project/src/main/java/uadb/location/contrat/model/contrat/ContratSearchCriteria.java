@@ -10,6 +10,7 @@ public class ContratSearchCriteria {
     private Long id;
     private Long locataireId;
     private Long chambreId;
+    private List<Long> chambreIds;
     private LocalDate dateDebut;
     private LocalDate dateDebutFrom;
     private LocalDate dateDebutTo;
@@ -36,6 +37,7 @@ public class ContratSearchCriteria {
     // Constructeurs
     public ContratSearchCriteria() {}
 
+
     public Long id() {
         return id;
     }
@@ -60,6 +62,15 @@ public class ContratSearchCriteria {
 
     public ContratSearchCriteria setChambreId(Long chambreId) {
         this.chambreId = chambreId;
+        return this;
+    }
+
+    public List<Long> chambreIds() {
+        return chambreIds;
+    }
+
+    public ContratSearchCriteria setChambreIds(List<Long> chambreIds) {
+        this.chambreIds = chambreIds;
         return this;
     }
 

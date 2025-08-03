@@ -1,4 +1,4 @@
-package uadb.location.logement.dto.client.mediaClient;
+package uadb.location.contrat.dto.client.mediaClient;
 
 public record CreateMediaDto(String fullMediaName) {
 }

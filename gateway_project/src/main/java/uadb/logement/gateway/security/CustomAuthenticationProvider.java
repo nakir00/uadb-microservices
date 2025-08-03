@@ -1,5 +1,6 @@
 package uadb.logement.gateway.security;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -10,22 +11,22 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import uadb.logement.gateway.service.UtilisateurService;
+import uadb.logement.gateway.service.AuthService;
 
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private static final Logger log = LoggerFactory.getLogger(CustomAuthenticationProvider.class);
 
-    private final UtilisateurService userDetailsService;
+    private final AuthService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
-    public CustomAuthenticationProvider(UtilisateurService userDetailsService, PasswordEncoder passwordEncoder) {
+    public CustomAuthenticationProvider(AuthService userDetailsService, PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(@NotNull Authentication authentication) throws AuthenticationException {
         final String email = authentication.getName();
         final String password = authentication.getCredentials().toString();
         log.info("Attempting authentication for user: {}", email);
@@ -42,6 +43,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             }
 
             log.info("Authentication successful for user: {}", email);
+
+            log.info("role : {}", user.getAuthorities().stream().findFirst().get().toString());
+
             return UsernamePasswordAuthenticationToken.authenticated(user, password, user.getAuthorities());
         } catch (UsernameNotFoundException e) {
             log.error("User not found: {}", email);
@@ -53,7 +57,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     }
 
     @Override
-    public boolean supports(Class<?> authentication) {
+    public boolean supports(@NotNull Class<?> authentication) {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 }

@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
+import uadb.location.logement.dto.client.UtilisateurClient.ReadUtilisateurDTO;
+import uadb.location.logement.dto.controller.maisonController.InfoMaisonResponse;
 import uadb.location.logement.model.Chambre.Chambre;
 
 import java.math.BigDecimal;
@@ -31,6 +33,22 @@ public class Maison {
     @CreationTimestamp(source = SourceType.DB)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime creeLe;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "maison", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Chambre> chambres;
+
+    public ReadUtilisateurDTO utilisateurDTO() {
+        return utilisateurDTO;
+    }
+
+    public Maison setUtilisateurDTO(ReadUtilisateurDTO utilisateurDTO) {
+        this.utilisateurDTO = utilisateurDTO;
+        return this;
+    }
+
+    @Transient
+    private ReadUtilisateurDTO utilisateurDTO;
 
     public Maison(String description, BigDecimal longitude, BigDecimal latitude, String adresse, Long proprietaireId) {
         this.proprietaireId = proprietaireId;
@@ -65,9 +83,7 @@ public class Maison {
         this.description = description;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "maison", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Chambre> chambres;
+
 
 
 
@@ -127,6 +143,31 @@ public class Maison {
 
     public void setChambres(List<Chambre> chambres) {
         this.chambres = chambres;
+    }
+
+    public static InfoMaisonResponse toInfoMaisonResponse(Maison maison){
+        if(maison.utilisateurDTO()==null){
+            return new InfoMaisonResponse(
+                    maison.getId(),
+                    maison.getProprietaireId(),
+                    maison.getAdresse(),
+                    maison.getLatitude(),
+                    maison.getLongitude(),
+                    maison.getDescription(),
+                    maison.getCreeLe(),
+                    null
+            );
+        }
+        return new InfoMaisonResponse(
+                maison.getId(),
+                maison.getProprietaireId(),
+                maison.getAdresse(),
+                maison.getLatitude(),
+                maison.getLongitude(),
+                maison.getDescription(),
+                maison.getCreeLe(),
+                maison.utilisateurDTO()
+        );
     }
 
 

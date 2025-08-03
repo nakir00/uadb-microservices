@@ -1,8 +1,4 @@
-package uadb.location.logement.dto.client.UtilisateurClient;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+package uadb.location.contrat.dto.client.UtilisateurClient;
 
 import java.time.LocalDateTime;
 

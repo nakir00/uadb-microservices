@@ -3,36 +3,67 @@ package uadb.location.contrat.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import uadb.location.contrat.dto.controller.contratController.InfoContratResponse;
+import org.springframework.web.server.ResponseStatusException;
 import uadb.location.contrat.dto.controller.paiementController.InfoPaiementResponse;
+import uadb.location.contrat.dto.controller.problemeController.InfoProblemeResponse;
+import uadb.location.contrat.dto.controller.problemeController.saveProbleme.CreateProblemeRequest;
 import uadb.location.contrat.model.contrat.Contrat;
-import uadb.location.contrat.model.contrat.ContratSearchCriteria;
-import uadb.location.contrat.model.contrat.ContratSpecification;
 import uadb.location.contrat.model.paiement.Paiement;
 import uadb.location.contrat.model.paiement.PaiementSearchCriteria;
 import uadb.location.contrat.model.paiement.PaiementSpecification;
+import uadb.location.contrat.model.probleme.Probleme;
+import uadb.location.contrat.model.probleme.ProblemeSearchCriteria;
+import uadb.location.contrat.model.probleme.ProblemeSpecification;
 import uadb.location.contrat.repositories.ContratRepository;
 import uadb.location.contrat.repositories.PaiementRepository;
-import uadb.location.contrat.service.Interface.IContratService;
-import uadb.location.contrat.service.Interface.IPaiementService;
+import uadb.location.contrat.repositories.ProblemeRepository;
+import uadb.location.contrat.service.Interface.IProblemeService;
+
+import java.util.Optional;
 
 @Service
-public class PaiementService implements IPaiementService {
+public class ProblemeService implements IProblemeService {
 
-    private final PaiementRepository paiementRepository;
+    private final ProblemeRepository problemeRepository;
+    private  final ContratRepository contratRepository;
 
 
-    public PaiementService(PaiementRepository paiementRepository) {
-        this.paiementRepository = paiementRepository;
+    public ProblemeService(ProblemeRepository problemeRepository, ContratRepository contratRepository) {
+        this.problemeRepository = problemeRepository;
+        this.contratRepository = contratRepository;
     }
-
 
     @Override
-    public Page<InfoPaiementResponse> getAllPaiements(Pageable pageable, PaiementSearchCriteria paiementSearchCriteria) {
-        Specification<Paiement> spec = PaiementSpecification.withCriteria(paiementSearchCriteria);
-        Page<Paiement> entities = paiementRepository.findAll(spec, pageable);
-        return entities.map(Paiement::toInfoPaiementResponse);
+    public Page<InfoProblemeResponse> getAllProblemes(Pageable pageable, ProblemeSearchCriteria problemeSearchCriteria) {
+        Specification<Probleme> spec = ProblemeSpecification.withCriteria(problemeSearchCriteria);
+        Page<Probleme> entities = problemeRepository.findAll(spec, pageable);
+        return entities.map(Probleme::toInfoProblemeResponse);
     }
 
+    @Override
+    public InfoProblemeResponse saveProbleme(CreateProblemeRequest createProblemeRequest) {
+
+        Probleme probleme = Probleme.fromCreateProblemeRequest(createProblemeRequest);
+        Optional<Contrat> contrat = contratRepository.findById(createProblemeRequest.contratId());
+        if (contrat.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "contrat non retrouve");
+        }
+        probleme.setContrat(contrat.get());
+        Probleme problemeSaved = problemeRepository.save(probleme);
+        return Probleme.toInfoProblemeResponse(problemeSaved);
+    }
+
+    public InfoProblemeResponse validateProbleme(Long problemeId) {
+
+        Optional<Probleme> problemeOptional = problemeRepository.findById(problemeId);
+        if (problemeOptional.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "contrat non retrouve");
+        }
+        Probleme probleme = problemeOptional.get();
+        probleme.setResolu(true);
+        Probleme problemeSaved = problemeRepository.save(probleme);
+        return Probleme.toInfoProblemeResponse(problemeSaved);
+    }
 }

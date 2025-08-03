@@ -7,6 +7,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
 import uadb.location.logement.dto.controller.rendezVousController.InfoRendezVousResponse;
+import uadb.location.logement.dto.controller.rendezVousController.InfoRendezVousResponseWOChambre;
+import uadb.location.logement.dto.controller.rendezVousController.createRendezVousRequest.CreateRendezVousRequest;
 import uadb.location.logement.model.Chambre.Chambre;
 
 import java.time.LocalDateTime;
@@ -113,5 +115,22 @@ public class RendezVous {
                 rendezVous.creeLe(),
                 Chambre.toChambreResponse(rendezVous.chambre())
         );
+    }
+
+    public static InfoRendezVousResponseWOChambre toInfoRendezVousResponseWOChambre(RendezVous rendezVous) {
+        return new InfoRendezVousResponseWOChambre(
+                rendezVous.id(),
+                rendezVous.locataireId(),
+                rendezVous.dateHeure(),
+                rendezVous.statut(),
+                rendezVous.creeLe()
+        );
+    }
+
+    public static RendezVous fromCreateRendezVousRequest(CreateRendezVousRequest createChambreRequest) {
+        return new RendezVous()
+                .setDateHeure(createChambreRequest.dateHeure())
+                .setLocataireId(createChambreRequest.locataireId())
+                .setStatut(Statut.EN_ATTENTE);
     }
 }

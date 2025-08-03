@@ -1,10 +1,14 @@
 package uadb.logement.gateway.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import uadb.logement.gateway.dto.utilisateur.InfoUtilisateurResponse;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -22,7 +26,7 @@ public class Utilisateur implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nomUtilisateur;
-    @Column(unique=true)
+    @Column(unique = true)
     private String email;
     private String password;
     private String telephone;
@@ -30,11 +34,16 @@ public class Utilisateur implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(nullable = false)
+    @CreationTimestamp(source = SourceType.DB)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime creeLe;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.name());
+        System.out.println("User authorities: " + authority.getAuthority());
         return Collections.singletonList(authority);
     }
 
@@ -130,7 +139,19 @@ public class Utilisateur implements UserDetails {
 
 
     public enum Role {
-        PROPRIETAIRE, LOCATAIRE
+        ROLE_PROPRIETAIRE, ROLE_LOCATAIRE
+    }
+
+    public static InfoUtilisateurResponse toInfoUtilisateurResponse(Utilisateur utilisateur) {
+        return new InfoUtilisateurResponse(
+                utilisateur.getId(),
+                utilisateur.getNomUtilisateur(),
+                utilisateur.getEmail(),
+                utilisateur.getTelephone(),
+                utilisateur.getCNI(),
+                utilisateur.getRole().name(),
+                utilisateur.getCreeLe()
+        );
     }
 
 }

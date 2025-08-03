@@ -3,8 +3,8 @@ package uadb.logement.gateway.controller.interfaces;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
-import uadb.logement.gateway.dto.authenticateUser.AuthenticateUserRequest;
-import uadb.logement.gateway.dto.registerUser.RegisterUserRequest;
+import uadb.logement.gateway.dto.auth.authenticateUser.AuthenticateUserRequest;
+import uadb.logement.gateway.dto.auth.registerUser.RegisterUserRequest;
 
 
 public interface IAuthController {

@@ -16,19 +16,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uadb.logement.gateway.controller.AuthController;
-import uadb.logement.gateway.dto.authenticateUser.AuthenticateUserRequest;
-import uadb.logement.gateway.dto.registerUser.RegisterUserRequest;
+import uadb.logement.gateway.dto.auth.authenticateUser.AuthenticateUserRequest;
+import uadb.logement.gateway.dto.auth.registerUser.RegisterUserRequest;
 import uadb.logement.gateway.model.Utilisateur;
 import uadb.logement.gateway.repository.UtilisateurRepository;
 import uadb.logement.gateway.security.jwt.JwtUtils;
-import uadb.logement.gateway.service.interfaces.IUtilisateurService;
+import uadb.logement.gateway.service.interfaces.IAuthService;
 import uadb.logement.gateway.service.returnedValues.UserConnected;
 
 import java.util.Optional;
 
 @Service
 @Slf4j
-public class AuthService implements IUtilisateurService {
+public class AuthService implements IAuthService {
 
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
@@ -54,7 +54,10 @@ public class AuthService implements IUtilisateurService {
         Utilisateur utilisateur = utilisateurRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur n'existe pas: " + username));
 
+
         logger.debug("User found: {}", utilisateur.getEmail());
+        logger.debug("User role: {}", utilisateur.getRole());
+        logger.debug("User authorities: {}", utilisateur.getAuthorities());
         return utilisateur;
     }
 
@@ -93,9 +96,9 @@ public class AuthService implements IUtilisateurService {
         userProfile.setNomUtilisateur(registerUserRequest.getNomUtilisateur());
         userProfile.setTelephone(registerUserRequest.getTelephone());
         userProfile.setCNI(registerUserRequest.getCNI());
-        if (registerUserRequest.getRole().compareTo(Utilisateur.Role.ROLE_PROPRIETAIRE.name())==0){
+        if (registerUserRequest.getRole().compareTo(Utilisateur.Role.ROLE_PROPRIETAIRE.name()) == 0) {
             userProfile.setRole(Utilisateur.Role.ROLE_PROPRIETAIRE);
-        }else{
+        } else {
             userProfile.setRole(Utilisateur.Role.ROLE_LOCATAIRE);
         }
         userProfile.setPassword(passwordEncoder.encode(registerUserRequest.getPassword()));

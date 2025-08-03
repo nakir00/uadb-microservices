@@ -1,50 +1,47 @@
-CREATE TABLE `maisons` (
-  `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `proprietaire_id` integer NOT NULL,
-  `adresse` varchar(255),
-  `latitude` decimal(10,8),
-  `longitude` decimal(11,8),
-  `description` text,
-  `cree_le` timestamp DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE `chambres` (
-  `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `maison_id` integer NOT NULL,
-  `titre` varchar(255),
-  `description` text,
-  `taille` varchar(255) COMMENT 'ex: 12m²',
-  `type` varchar(255) COMMENT 'simple | appartement | maison',
-  `meublee` boolean,
-  `salle_de_bain` boolean,
-  `prix` decimal(10,2),
-  `disponible` boolean,
-  `cree_le` timestamp DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE `rendez_vous` (
-  `id` integer PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE `contrats` (
+  `id` integer  PRIMARY KEY AUTO_INCREMENT,
   `locataire_id` integer NOT NULL,
   `chambre_id` integer NOT NULL,
-  `date_heure` timestamp,
-  `statut` varchar(255) COMMENT 'en_attente | confirmé | annulé',
-  `cree_le` timestamp DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE `medias` (
-  `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `chambre_id` integer NOT NULL,
-  `url` varchar(255),
-  `type` varchar(255) COMMENT 'photo | video',
+  `date_debut` date,
+  `date_fin` date,
+  `montant_caution` decimal,
+  `mois_caution` integer COMMENT '<= 3',
   `description` text,
-  `cree_le` timestamp DEFAULT CURRENT_TIMESTAMP
+  `mode_paiement` varchar(255) COMMENT 'virement | cash | mobile money',
+  `periodicite` varchar(255) COMMENT 'journalier | hebdomadaire | mensuel',
+  `statut` varchar(255) COMMENT 'actif | resilié',
+  `cree_le` timestamp
 );
 
--- Ajout des clés étrangères
-ALTER TABLE `chambres` ADD FOREIGN KEY (`maison_id`) REFERENCES `maisons` (`id`);
-ALTER TABLE `rendez_vous` ADD FOREIGN KEY (`chambre_id`) REFERENCES `chambres` (`id`);
-ALTER TABLE `medias` ADD FOREIGN KEY (`chambre_id`) REFERENCES `chambres` (`id`);
+CREATE TABLE `paiements` (
+  `id` integer  PRIMARY KEY AUTO_INCREMENT,
+  `contrat_id` integer NOT NULL,
+  `montant` decimal,
+  `statut` varchar(255) COMMENT 'payé | impayé',
+  `date_echeance` date,
+  `date_paiement` timestamp,
+  `cree_le` timestamp
+);
 
--- Si vous avez des tables pour les propriétaires et locataires, ajoutez ces contraintes :
--- ALTER TABLE `maisons` ADD FOREIGN KEY (`proprietaire_id`) REFERENCES `proprietaires` (`id`);
--- ALTER TABLE `rendez_vous` ADD FOREIGN KEY (`locataire_id`) REFERENCES `locataires` (`id`);
+
+CREATE TABLE `problemes` (
+  `id` integer  PRIMARY KEY AUTO_INCREMENT,
+  `contrat_id` integer NOT NULL,
+  `signale_par` integer COMMENT 'utilisateur_id',
+  `description` text,
+  `type` varchar(255) COMMENT 'plomberie | electricite | autre',
+  `responsable` varchar(255) COMMENT 'locataire | proprietaire',
+  `resolu` boolean,
+  `cree_le` timestamp
+);
+
+
+
+
+ALTER TABLE `paiements` ADD FOREIGN KEY (`contrat_id`) REFERENCES `contrats` (`id`);
+
+
+
+
+ALTER TABLE `problemes` ADD FOREIGN KEY (`contrat_id`) REFERENCES `contrats` (`id`);
+

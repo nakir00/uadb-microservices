@@ -1,2 +1,4 @@
-package uadb.location.logement.controller.Interfaces;public class IRendezVousController {
+package uadb.location.logement.controller.Interfaces;
+
+public interface IRendezVousController {
 }

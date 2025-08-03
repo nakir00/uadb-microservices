@@ -13,35 +13,43 @@ import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouter
 import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions.http;
 
 @Configuration
-public class PaiementRoutes {
+public class ProblemeRoutes {
 
     @Value("${contrat.service.url}")
     private String contratServiceUrl;
 
     @Bean
-    public RouterFunction<ServerResponse> locationServicePaiementRouteNew() {
+    public RouterFunction<ServerResponse> locationServiceProblemeRouteNew() {
         return route("location_service_chambre")
-                .GET("/api/paiement", http())
+                .GET("/api/probleme", http())
                     .before(uri(contratServiceUrl))
-                    .before(setPath("/api/paiement"))
-                .POST("/api/paiement", http())
+                    .before(setPath("/api/probleme"))
+                .POST("/api/probleme", http())
                     .before(uri(contratServiceUrl))
-                    .before(setPath("/api/paiement"))
+                    .before(setPath("/api/probleme"))
                 .build();
     }
 
     @Bean
-    public RouterFunction<ServerResponse> locationServicePaiementRoutePut() {
-        return route("location_service_paiement_segment")
-                .GET("/api/paiement/{segment}", http())
+    public RouterFunction<ServerResponse> locationServiceProblemeRoutePut() {
+        return route("location_service_probleme_segment")
+                .GET("/api/probleme/{segment}", http())
                     .before(uri(contratServiceUrl))
-                    .before(setPath("/api/paiement/{segment}"))
-                .PUT("/api/paiement/{segment}", http())
+                    .before(setPath("/api/probleme/{segment}"))
+                .PUT("/api/probleme/{segment}", http())
                     .before(uri(contratServiceUrl))
-                    .before(setPath("/api/paiement/{segment}"))
-                .DELETE("/api/paiement/{segment}", http())
+                    .before(setPath("/api/probleme/{segment}"))
+                .DELETE("/api/probleme/{segment}", http())
                     .before(uri(contratServiceUrl))
-                    .before(setPath("/api/paiement/{segment}"))
+                    .before(setPath("/api/probleme/{segment}"))
+                .build();
+    }
+    @Bean
+    public RouterFunction<ServerResponse> locationServiceProblemeRoutePutResolu() {
+        return route("location_service_probleme_segment_resolu")
+                .PUT("/api/probleme/{segment}/resolu", http())
+                .before(uri(contratServiceUrl))
+                .before(setPath("/api/probleme/{segment}/resolu"))
                 .build();
     }
 }
